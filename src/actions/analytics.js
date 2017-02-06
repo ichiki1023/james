@@ -27,39 +27,46 @@ export function checkAnalyticsLog(definition, requests) {
 export function checkRequests(definition, requests) {
   const query = definition.query;
   const result = {};
-  const requestQuery = requests.filter( (requests) => {
+  const requestQueries = requests.filter( (requests) => {
     const { query } = requests.request;
     return query.c1 === definition.url; //URL比較
   });
 
-  if(!requestQuery || requestQuery.length < 0) {
+  if(!requestQueries || requestQueries.length < 0) {
     return result;
   }
 
-  const request = requestQuery[0];
+  const request = requestQueries[0];
 
   if(!request) {
     return result;
   }
-  console.log(request);
+
+  const requestQuery = request.request.query;
+  console.log(requestQuery);
 
   Object.keys(query).forEach( key => {
+    console.log(query);
+    console.log(key);
+    console.log(result);
     // queryがtrueの場合
-    if(query[key] == true) {
+    if(query[key] === true) {
       //値が定義されている
-      if(request[key]) {
+      if(requestQuery[key]) {
         result[key] = true;
         //成功
+      } else {
+        result[key] = false;
       }
-      result[key] = false;
     } else {
       //値が定義されていない
-      if(!request[key]) {
+      if(!requestQuery[key]) {
         //成功
         result[key] = true;
+      } else{
+        //失敗
+        result[key] = false;
       }
-      //失敗
-      result[key] = false;
     }
   });
   return result;
@@ -79,7 +86,7 @@ export function getDefinition() {
       c6: false,
       c7: false,
       c8: false,
-      c9: false,
+      c9: true,
       c10: true
     }
   }
