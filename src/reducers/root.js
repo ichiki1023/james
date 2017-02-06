@@ -6,6 +6,7 @@ import proxy from './proxy.js';
 import requests from './requests.js';
 import browsers from './browsers.js';
 import urlMappings from './url-mappings.js';
+import analytics from './analytics.js';
 
 const rootReducer = combineReducers({
   app,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   requests,
   browsers,
   urlMappings,
+  analytics,
   routing: routerReducer
 });
 

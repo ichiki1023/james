@@ -1,6 +1,7 @@
 import { push } from 'react-router-redux';
 import DevTools from '../service/dev-tools.js';
 import constants from '../constants.js';
+import { getAnalyticsDefinition }  from '../actions/analytics.js';
 
 const devTools = new DevTools();
 
@@ -19,6 +20,9 @@ export function init(data) {
     if (constants.DEV) {
       dispatch(toggleDevTools());
     }
+
+    //初回時に入れておく
+    dispatch(getAnalyticsDefinition());
   };
 }
 
