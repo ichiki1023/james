@@ -7,7 +7,7 @@ const middleware = store => next => action => {
   switch (action.type) {
     case requestActions.SYNC_REQUESTS:
       next(action);
-      store.dispatch(analyticsActions.checkAnalyticsLog(analyticsState.definition, requestState.data.requests));
+      store.dispatch(analyticsActions.checkAnalyticsLog(analyticsState.definitions, requestState.data.requests));
       break;
 
     default:

@@ -12,6 +12,7 @@ $fa-font-path: "fonts" !default;
 @import 'components/context-menu';
 @import 'components/inspect-request';
 @import 'components/windows/url-mapping';
+@import 'components/windows/definition';
 
 body {
   font-family: 'Lato', sans-serif;

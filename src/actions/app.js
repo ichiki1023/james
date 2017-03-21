@@ -1,7 +1,7 @@
 import { push } from 'react-router-redux';
 import DevTools from '../service/dev-tools.js';
 import constants from '../constants.js';
-import { getAnalyticsDefinition }  from '../actions/analytics.js';
+import { getAnalyticsDefinitions, getAnalyticsProps }  from '../actions/analytics.js';
 
 const devTools = new DevTools();
 
@@ -15,14 +15,17 @@ export function init(data) {
       ...data
     });
 
-    dispatch(navigateToHome());
+    //初回時に入れておく
+    // Component DidmountとかでOK
+    dispatch(getAnalyticsProps());
+    dispatch(getAnalyticsDefinitions());
+
+    dispatch(navigateToDefinition());
+    // dispatch(navigateToHome());
 
     if (constants.DEV) {
       dispatch(toggleDevTools());
     }
-
-    //初回時に入れておく
-    dispatch(getAnalyticsDefinition());
   };
 }
 
@@ -31,6 +34,10 @@ export function toggleDevTools() {
     dispatch({type: TOGGLE_DEVTOOLS});
     devTools.toggle();
   };
+}
+
+export function navigateToDefinition() {
+  return push('/definition');
 }
 
 export function navigateToHome() {

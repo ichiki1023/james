@@ -12,7 +12,7 @@ class ProxyHandler extends EventEmitter {
     this.config = config;
     this.hoxy = undefined;
     //TODO: 自由に変更可能にしたい,フィルターはDBに保存出来るようにする
-    this.filter = 'recruit';//undefined;
+    this.filter = '/ss/';//undefined;
     this.status = undefined;
     this.cachingEnabled = false;
 

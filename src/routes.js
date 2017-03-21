@@ -5,10 +5,12 @@ import App from './containers/app.js';
 import Home from './containers/home.js';
 import Requests from './containers/requests.js';
 import UrlMappings from './containers/url-mappings.js';
+import Definition from './containers/definition.js';
 
 export default
   <Route path="/" component={App}>
     <IndexRoute component={Home} />
     <Route path="requests" component={Requests} />
     <Route path="url-mappings" component={UrlMappings}/>
+    <Route path="definition" component={Definition}/>
   </Route>;
