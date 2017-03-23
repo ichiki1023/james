@@ -1,15 +1,11 @@
-import webdriver from 'selenium-webdriver';
-import proxy from 'selenium-webdriver/proxy';
+import { getRequests } from '../service/open-browser';
+
 
 export const GET_ANALYTICS_DEFINITIONS = 'GET_ANALYTICS_DEFINITIONS';
 export const GET_ANALYTICS_PROPS = 'GET_ANALYTICS_PROPS';
 export const CHECK_ANALYTICS = 'CHECK_ANALYTICS';
 export const CHANGE_MULTIPLE_QUERY = 'CHANGE_MULTIPLE_QUERY';
-
-const defaultOptions = {
-  browser: 'firefox',
-  proxy: 'localhost:1338'
-};
+export const SUCCESS_CATCH_REQUESTS = 'SUCCESS_CATCH_REQUESTS';
 
 // 定義書のデータ呼び出し
 export function getAnalyticsDefinitions() {
@@ -52,86 +48,39 @@ export function checkAnalyticsLog(definition, requests) {
 
 export function openBrowser(requests) {
   console.log(requests);
-  const launchOptions = {
-    ...defaultOptions
-  };
-
-  let driver = new webdriver.Builder()
-    .forBrowser(launchOptions.browser)
-    .setProxy(proxy.manual({http: launchOptions.proxy}))
-    .build();
-
-  const promises = [];
-  requests.map((request) => {
-    promises.push(requestPromise(driver, request));
-  });
-
-  Promise.all(promises).then( () => {
-    driver.quit();
+  getRequests(requests).then( (result) => {
+    console.log(result);
+    return {
+      type: SUCCESS_CATCH_REQUESTS,
+      data: {}
+    }
   });
 }
 
-function requestPromise(driver, request) {
-  return new Promise((resolve) => {
-    driver.get(request).then( () => {
-      console.log("finish url:" + request);
-      resolve();
-    }).catch((error) => {
-      console.log("driver error:" + error);
-      resolve();
-    });
-  }).catch((error) => {
-    console.log("promise error:" + error);
-  });
-}
 
 //比較ロジック
 export function checkRequests(definitions, requests) {
-  const result = {};
-  const requestQueries = requests.filter( (requests) => {
-    const { query } = requests.request;
-    const definition = definitions.find( definition => definition.url === query.c1 );
-    if(definition){
-      return true;
-    }
-    return false;
+  let definition = null;
+  const requestObject = requests.find( requestObject => {
+    const { query } = requestObject.request;
+    definition = definitions.find(definition => definition.url === query.c1);
+    return definition != null
   });
+  if(!requestObject) {
+    return {};
+  }
+  const requestQuery = requestObject.request.query;
 
-  if(!requestQueries || requestQueries.length < 0) {
-    return result;
+  if(!requestQuery && !definition) {
+    return {};
   }
 
-  const request = requestQueries[0];
-
-  if(!request) {
-    return result;
-  }
-
-  const requestQuery = request.request.query;
-  console.log(requestQuery);
-
-  Object.keys(query).forEach( key => {
-    console.log(query);
-    console.log(key);
-    console.log(result);
-    // queryがtrueの場合
-    if(query[key] === true) {
-      //値が定義されている
-      if(requestQuery[key]) {
-        result[key] = true;
-        //成功
-      } else {
-        result[key] = false;
-      }
+  const result = {};
+  definition.query.map( query => {
+    if(requestQuery[query]) {
+      result[query] = true;
     } else {
-      //値が定義されていない
-      if(!requestQuery[key]) {
-        //成功
-        result[key] = true;
-      } else{
-        //失敗
-        result[key] = false;
-      }
+      result[query] = false;
     }
   });
   return result;

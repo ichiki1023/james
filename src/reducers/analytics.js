@@ -5,7 +5,7 @@ import * as actions from '../actions/analytics.js';
 const initialState = {
   definitions: [], //定義されたデータ
   analyticsProps: [],
-  result: [] // SYNC_REQUESTと定義データを比較した結果
+  results: {} // SYNC_REQUESTと定義データを比較した結果
 };
 
 // reducers
@@ -40,10 +40,14 @@ function analyticsProps(state = initialState.analyticsProps, action) {
 }
 
 function result(state = initialState.result, action) {
-  if (action.type !== actions.CHECK_ANALYTICS) {
-    return state;
+  switch (action.type) {
+    case actions.CHECK_ANALYTICS:
+      return action.result;
+    case actions.SUCCESS_CATCH_REQUESTS:
+        return state;
+    default:
+      return state;
   }
-  return action.result;
 }
 
 export default combineReducers({

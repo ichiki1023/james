@@ -32,6 +32,9 @@ const TitleBar = ({urlMapCount, openDevTools}) => {
       <i className=" fa fa-cog" />
       Developer
     </a>
+    <Link to="/definition" activeClassName="active">
+      Analytics
+    </Link>
   </div>;
 };
 
