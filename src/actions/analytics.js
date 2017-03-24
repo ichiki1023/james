@@ -39,17 +39,16 @@ export function changeCheckbox(e, id) {
 
 //サイカタの値確認
 export function checkAnalyticsLog(definition, requests) {
-  const result = checkRequests(definition, requests);
+  const results = checkRequests(definition, requests);
   return {
     type: CHECK_ANALYTICS,
-    result: result
+    results: results
   };
 }
 
 export function openBrowser(requests) {
   console.log(requests);
-  getRequests(requests).then( (result) => {
-    console.log(result);
+  getRequests(requests).then( () => {
     return {
       type: SUCCESS_CATCH_REQUESTS,
       data: {}
@@ -60,30 +59,41 @@ export function openBrowser(requests) {
 
 //比較ロジック
 export function checkRequests(definitions, requests) {
-  let definition = null;
-  const requestObject = requests.find( requestObject => {
+
+  const requestObjects = requests.filter( (requestObject) => {
     const { query } = requestObject.request;
-    definition = definitions.find(definition => definition.url === query.c1);
-    return definition != null
-  });
-  if(!requestObject) {
-    return {};
-  }
-  const requestQuery = requestObject.request.query;
-
-  if(!requestQuery && !definition) {
-    return {};
-  }
-
-  const result = {};
-  definition.query.map( query => {
-    if(requestQuery[query]) {
-      result[query] = true;
-    } else {
-      result[query] = false;
+    const definition = definitions.find(definition => definition.url === query.c1);
+    if (definition != null) {
+      //definitions.push(definition);
+      requestObject.definition = definition;
+      return true;
     }
+    return false;
   });
-  return result;
+
+  if(!requestObjects || requestObjects.length < 0) {
+    return {};
+  }
+
+  if(!definitions || Object.keys(definitions).length < 0) {
+    return {};
+  }
+
+  const results = {};
+  requestObjects.map( requestObject => {
+    const requestQuery = requestObject.request.query;
+    const definition = requestObject.definition;
+    const result = {};
+    definition.query.map( query => {
+      if(requestQuery[query]) {
+        result[query] = true;
+      } else {
+        result[query] = false;
+      }
+    });
+    results[definition.url] = result;
+  });
+  return results;
 }
 
 // test データ

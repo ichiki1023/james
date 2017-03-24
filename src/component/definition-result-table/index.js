@@ -15,8 +15,22 @@ class DefinitionResultTable extends Component {
     const {
       definitions,
       analyticsProps,
-      result
+      results
     } = this.props;
+
+    const getResultDefinitions = () => {
+      const r = [];
+      definitions.map( definition => {
+        const result = results[definition.url];
+        r.push({
+          result: result !== undefined ? result : {},
+          ...definition
+        });
+      });
+      return r;
+    };
+
+    const resultDefinitions = getResultDefinitions();
 
     return <table className="striped">
           <thead>
@@ -29,12 +43,15 @@ class DefinitionResultTable extends Component {
           </tr>
           </thead>
           <tbody>
-          { definitions.map((definition, index) => {
+          { resultDefinitions.map((definition, index) => {
             return <tr key={index}>
-              <td>{definition.url}</td>
+              {
+                Object.keys(definition.result).length !== 0 ? <td>{definition.url}</td>
+                : <td style={{color: '#FF6900'}}>{definition.url}</td>
+              }
               { analyticsProps.map((analytics) => {
-                return result[analytics] !== undefined ?
-                  (result[analytics] === true ? <td>◯</td> : <td>☓</td>)
+                return definition.result[analytics] !== undefined ?
+                  (definition.result[analytics] === true ? <td>◯</td> : <td style={{color: 'red'}}>☓</td>)
                   : <td>-</td>
               })}
             </tr>
@@ -47,7 +64,7 @@ class DefinitionResultTable extends Component {
 DefinitionResultTable.propTypes = {
   definitions: PropTypes.array.isRequired,
   analyticsProps: PropTypes.array.isRequired,
-  result: PropTypes.object.isRequired
+  results: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({

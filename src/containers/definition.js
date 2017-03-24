@@ -15,7 +15,7 @@ class Definition extends Component {
   render() {
     const {
       definitions,
-      result,
+      results,
       execute
     } = this.props;
 
@@ -28,7 +28,7 @@ class Definition extends Component {
         <DefinitionInputTable {...this.props} />
       </div>
       <Button waves='light' onClick={ () => execute(requests)}>実行</Button>
-      { Object.keys(result).length !== 0 ?
+      { Object.keys(results).length !== 0 ?
         <div className="definition-contents">
           <DefinitionResultTable  {...this.props} />
         </div>
@@ -40,7 +40,7 @@ class Definition extends Component {
 Definition.propTypes = {
   definitions: PropTypes.array.isRequired,
   analyticsProps: PropTypes.array.isRequired,
-  result: PropTypes.object.isRequired,
+  results: PropTypes.object.isRequired,
   check: PropTypes.func.isRequired,
   execute: PropTypes.func.isRequired
 }

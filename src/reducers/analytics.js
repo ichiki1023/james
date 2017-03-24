@@ -39,10 +39,10 @@ function analyticsProps(state = initialState.analyticsProps, action) {
 
 }
 
-function result(state = initialState.result, action) {
+function results(state = initialState.results, action) {
   switch (action.type) {
     case actions.CHECK_ANALYTICS:
-      return action.result;
+      return action.results;
     case actions.SUCCESS_CATCH_REQUESTS:
         return state;
     default:
@@ -53,7 +53,7 @@ function result(state = initialState.result, action) {
 export default combineReducers({
   definitions,
   analyticsProps,
-  result
+  results
 });
 
 // selectors
